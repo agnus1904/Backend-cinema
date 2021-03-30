@@ -1,0 +1,372 @@
+@font-face {
+    font-family: Lato;
+    src: url(../Font/Lato/Lato-Black.ttf);
+  }
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+    scroll-behavior: smooth;
+}
+
+//css custom
+.red{
+    color: rgb(255,0,60);
+}
+.gray{
+    color: rgb(81,82,85);
+}
+
+
+section{
+    padding: 60px;
+}
+
+.banner{
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 60px 50px;
+    img{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .textBx{
+        z-index: 10;
+        color: white;
+        max-width: 280px;
+        padding-left: 100px;
+        h2{
+            font-size: 6em;
+        }
+        span{
+            font-size: 1.5em;
+        }
+        .opentime{
+            font-size: 2.5em;
+            text-align: center;
+            margin: 15px;
+        }
+        .btn{
+            position: relative;
+            background: rgb(255,0,60);
+            display: inline-block;
+            color: rgb(255,245,246);
+            margin-top: 20px;
+            border-radius: 5px;
+            padding: 13px 30px;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            text-decoration: none;
+            font-weight: 900;
+        }
+    }
+    .overplay{
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: #111;
+        opacity: 0.4;
+    }
+    .banner-icon{
+        z-index: 10;
+        position: absolute;
+        display: flex;
+        bottom: 30px;
+        flex-direction: column;
+        a{
+            color: white;
+            margin: 10px 10px;
+        }
+    }
+    .banner-play-trailer{
+        z-index: 10;
+        position: absolute;
+        right: 150px;
+        color: white;
+    }
+    .banner-next-movie{
+        z-index: 10;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 350px;
+        height: 150px;
+        background-image: url('http://localhost/Cinema/Public/Imgs/banner-1.png');
+        background-size: cover;
+        background-position: center;
+    }
+}
+
+header.sticky{
+    background: #fff;
+    padding: 25px 50px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    .logo{
+        color: #111;
+    }
+    ul{
+        li{
+            a{
+                color: #111;
+            }
+            .search-icon,
+            .input-search{
+                border-color: black;
+                color: black;
+            }
+            .input-search.show-input{
+                border-color: black;
+            }
+        }
+    }
+}
+
+header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 25px 40px;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.5s;
+    .logo{
+        color: #fff;
+        font-size: 1.2em !important;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
+    .header-section{
+        position: relative;
+        display: flex;
+        flex: 1;
+        align-items: center;
+        height: 2em;
+        li{
+            position: relative;
+            list-style-type: none;
+            a,
+            .input-search{
+                position: relative;
+                color: white;
+                text-decoration: none;
+                font-size: 0.8em;
+                transition: all 0.3s ease;
+            }
+            i{
+                position:relative;
+                color: white;
+
+            }
+        }
+    }
+    .header-menu{
+        justify-content: space-between;
+    
+    }
+    .header-button-group{
+        padding-right: 20px;
+        justify-content: flex-end;
+        li{
+            .header-button-group-item{
+                margin: 0 20px;
+            }
+            .search-icon{
+                margin-top: 5px;
+                margin: 0 20px 0 0;
+                cursor: pointer;
+            }
+            .input-search{
+                height: 2em;
+                background: transparent;
+                outline: none;
+                border-radius: 5px;
+                border-color: white;
+                font-size: 1em !important;
+                font-weight: 300;
+                border-width: thin;
+                width: 2px;
+                transition: width 0.5s;
+            }
+            .input-search.show-input{
+                width: 200px;
+                border-color: white;
+                padding: 0 10px;
+                transition: 0.5s;
+            }
+            .input-search:focus{
+                box-shadow: 0 0 5pt 2pt #D3D3D3;
+            }
+            .btn{
+                background: rgb(255,0,60);
+                color: rgb(255,245,246);
+                border-radius: 5px;
+                padding: 10px 25px;
+                font-size: 0.8em;
+            }
+        }
+    }
+}
+
+
+.home-content{
+    background-color: rgb(15,16,20);
+    color: white;
+    padding: 150px 180px 100px 180px;
+    .header{
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        h1{
+            font-size: 2.5em;
+        }
+        a{
+            text-decoration: none;
+            font-size: 0.7em;
+        }
+    }
+    .home-content-list{
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin: 50px 0;
+        .home-content-item{
+            margin: 30px 0;
+            width: 190px;
+            height: 400px;
+            .home-content-item-img{
+                position: relative;
+                width:100%;
+                height: 300px;
+                cursor: pointer;
+                .home-content-item-overplay{
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 190px;
+                    height: 300px;
+                    background-color: rgba(0,0,0,0);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    transition: all 0.5s;
+                    i{
+                        // display: none;
+                        transform: scale(0.4);
+                        transition: all 0.4s;
+                        opacity: 0;
+                    }
+                }
+            }
+            .home-content-item-img:hover .home-content-item-overplay{
+                background-color: rgba(0,0,0,0.3);
+                transition: 0.3s;
+            }
+            .home-content-item-img:hover .home-content-item-overplay i{
+                // display: block;
+                transform: scale(1);
+                opacity: 1;
+            }
+
+
+            .home-content-item-info{
+                margin-top: 15px;
+                .home-content-item-info-top{
+                    margin-bottom: 10px;
+                    display: flex;
+                    h5{
+                        flex:7;
+                    }
+                    .love-icon{
+                        flex:3;
+                        text-align: end;
+                        padding: 0 5px;
+                    }
+                }
+                .home-content-item-info-bottom{
+                    span{
+                        font-size: 0.5em;
+                    }
+                }
+            }
+        }
+    }
+}
+
+footer{
+    height: 450px;
+    background-color: rgb(9,10,14);
+    padding: 100px 180px;
+    color: rgb(81,82,85);
+    .footer-top{
+        display: flex;
+        justify-content: space-between;
+        .footer-logo{
+            flex: 2;
+            h2{
+                color:#D3D3D3;
+            }
+        }
+        .footer-menu{
+            flex: 6;
+        }
+        .footer-subscribe{
+            flex: 2;
+            .subscribe-form{
+                label{
+                    font-size: 0.9em;
+                }
+                color:#D3D3D3;
+                input{
+                    background-color: rgb(9,10,14);
+                    border: none;
+                    margin: 25px 0 10px 0;
+                    font-size: 0.7em;
+                    outline: none;
+                    color: #D3D3D3;
+                }
+                hr{
+                    border-color: #646464;
+                    margin-bottom: 20px;
+                }
+                .footer-subscribe-btn{
+                    text-decoration: none;
+                    font-size: 0.6em;
+                }
+            }
+        }
+    }
+    .footer-bottom{
+        font-size: 0.7em;
+        margin-top: 50px;
+        display: flex;
+        .footer-copyright{
+            flex: 8;
+            line-height: 20px;
+        }
+        .footer-icon{
+            flex: 2;
+            a{
+                font-size: 1.2em;
+                text-decoration: none;
+                color:#646464;
+                margin-right: 30px;
+            }
+        }
+    }
+}
