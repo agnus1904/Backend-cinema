@@ -46,5 +46,54 @@
             }
             mysqli_close($this->conn);
         }
+
+        public function createNewMovie(
+            $movie_name,
+            $movie_name_banner,
+            $description,
+            $avatar,
+            $banner,
+            $release,
+            $language,
+            $main_type,
+            $country,
+            $duration
+        ){
+            $check=0;
+            $qr="
+                insert into cinema.movie
+                (
+                    movie_name,
+                    movie_name_banner,
+                    description,
+                    release_date,
+                    banner_url,
+                    avatar_url,
+                    language,
+                    main_type,
+                    country,
+                    duration
+                )
+                value
+                (
+                    '".$movie_name."',
+                    '".$movie_name_banner."',
+                    '".$description."',
+                    '".$release."',
+                    '".$banner."',
+                    '".$avatar."',
+                    '".$language."',
+                    '".$main_type."',
+                    '".$country."',
+                    ".$duration."
+                );
+            ";
+            if(mysqli_query($this->conn,$qr)){
+                $check=true;
+            }else{
+                $check=false;
+            }
+            mysqli_close($this->conn);
+            return $check;
+        }
     }
-?>

@@ -16,11 +16,11 @@
                 $this->controller = $arr[0];
                 unset($arr[0]);
             }
-            require_once "./MVC/Controllers/". $this->controller .".php";
+            require_once "./MVC/Controllers/".$this->controller.".php";
             $this->controller = new $this->controller;
 
             //Action handling
-            if( isset($arr[1]))
+            if(isset($arr[1]))
             {
                 if( method_exists($this->controller,  $arr[1]) ){
                     $this->action = $arr[1];
