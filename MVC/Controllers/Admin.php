@@ -196,6 +196,260 @@
             }
         }
 
+        function CreateNewActor(){
+            $response = array();
+            $actor_name=
+            $actor_name_banner=
+            $location=
+            $avatar=
+            $banner=
+            $date_of_birth=
+            $occupation=
+            $biography =
+            "";
+            $allowed = array("jpg" => "image/jpg",
+                "jpeg" => "image/jpeg",
+                "gif" => "image/gif",
+                "png" => "image/png");
+            $avatar_tmp_name = '';
+            $banner_tmp_name = '';
+            $upload_avatar_dir = 'Public/Imgs/avatar_small/';
+            $upload_banner_dir = 'Public/Imgs/banner_movie/';
+            $upload_avatar_name = '';
+            $upload_banner_name = '';
+            $server_url = 'http://localhost/Cinema/';
+
+            if($_SERVER['REQUEST_METHOD'] == "POST") {
+
+//                Actor Name
+                if (!isset($_POST["actor_name"]) ||
+                    empty($_POST["actor_name"]) ||
+                    is_null($_POST["actor_name"])
+                ){
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Please Input Actor Name"
+                    );
+                    echo json_encode($response);
+                    return;
+                } else {
+                    $actor_name = $_POST["actor_name"];
+                }
+
+//                Actor Name Banner
+                if (!isset($_POST["actor_name_banner"]) ||
+                    empty($_POST["actor_name_banner"]) ||
+                    is_null($_POST["actor_name_banner"])
+                ){
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Please Input Actor Name Banner"
+                    );
+                    echo json_encode($response);
+                    return;
+                } else {
+                    $actor_name_banner = $_POST["actor_name_banner"];
+                }
+
+//                Location
+                if (!isset($_POST["location"]) ||
+                    empty($_POST["location"]) ||
+                    is_null($_POST["location"])
+                ){
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Please Input location of actor"
+                    );
+                    echo json_encode($response);
+                    return;
+                } else {
+                    $location = $_POST["location"];
+                }
+
+
+//                Avatar
+                if(isset($_FILES['avatar']))
+                {
+
+                    // Lấy thông tin file bao gồm tên file, loại file, kích cỡ file
+                    $avatar_name = $_FILES["avatar"]["name"];
+                    $avatar_tmp_name = $_FILES["avatar"]["tmp_name"];
+
+                    // Kiểm tra định dạng file .jpg, png,...
+                    $ext_avatar = pathinfo($avatar_name, PATHINFO_EXTENSION);
+
+                    // Nếu không đúng định dạng file thì báo lỗi
+                    if(!array_key_exists($ext_avatar, $allowed)) {
+                        $response = array(
+                            "status" => "error",
+                            "error" => true,
+                            "message" => "Error Image, Please Choose another Avatar Image"
+                        );
+                        echo json_encode($response);
+                        return;
+                    }
+                    else
+                    {
+                        $random_avatar_name = rand(1000,1000000)."-".$avatar_name;
+                        $upload_avatar_name = $upload_avatar_dir.strtolower($random_avatar_name);
+                        $upload_avatar_name = preg_replace('/\s+/', '-', $upload_avatar_name);
+                    }
+                }else{
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "No Avatar Image was sent!"
+                    );
+                    echo json_encode($response);
+                    return;
+                }
+
+
+
+//                Banner
+                if(isset($_FILES['banner']))
+                {
+                    // Lấy thông tin file bao gồm tên file, loại file, kích cỡ file
+                    $banner_name = $_FILES["banner"]["name"];
+                    $banner_tmp_name = $_FILES["banner"]["tmp_name"];
+//                    $error = $_FILES["banner"]["error"];
+
+                    // Kiểm tra định dạng file .jpg, png,...
+                    $ext_banner = pathinfo($banner_name, PATHINFO_EXTENSION);
+
+                    // Nếu không đúng định dạng file thì báo lỗi
+                    if(!array_key_exists($ext_banner, $allowed)) {
+                        $response = array(
+                            "status" => "error",
+                            "error" => true,
+                            "message" => "Error Image, Please Choose another Banner Image"
+                        );
+                        echo json_encode($response);
+                        return;
+                    }
+                    else
+                    {
+                        $random_banner_name = rand(1000,1000000)."-".$banner_name;
+                        $upload_banner_name = $upload_banner_dir.strtolower($random_banner_name);
+                        $upload_banner_name = preg_replace('/\s+/', '-', $upload_banner_name);
+                        // echo $upload_name;
+                    }
+                }else{
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "No Banner Image was sent!"
+                    );
+                    echo json_encode($response);
+                    return;
+                }
+
+//                  Date of birth
+                if (!isset($_POST["date_of_birth"]) ||
+                    empty($_POST["date_of_birth"]) ||
+                    is_null($_POST["date_of_birth"])
+                ){
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Please Input choose a date of birth"
+                    );
+                    echo json_encode($response);
+                    return;
+                } else {
+                    $date_of_birth = $_POST["date_of_birth"];
+                }
+
+//                  Occupation
+                if (!isset($_POST["occupation"]) ||
+                    empty($_POST["occupation"]) ||
+                    is_null($_POST["occupation"])
+                ){
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Please Input Occupation of actor"
+                    );
+                    echo json_encode($response);
+                    return;
+                } else {
+                    $occupation = $_POST["occupation"];
+                }
+
+//                  Biography
+                if (!isset($_POST["biography"]) ||
+                    empty($_POST["biography"]) ||
+                    is_null($_POST["biography"])
+                ){
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Please Input Biography of actor"
+                    );
+                    echo json_encode($response);
+                    return;
+                } else {
+                    $biography = $_POST["biography"];
+                }
+
+                if(!move_uploaded_file($avatar_tmp_name , $upload_avatar_name))
+                {
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Error uploading the Avatar Image!"
+                    );
+                    echo json_encode($response);
+                    return;
+                }
+
+                if(!move_uploaded_file($banner_tmp_name , $upload_banner_name))
+                {
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Error uploading the Banner Image!"
+                    );
+                    echo json_encode($response);
+                    return;
+                }
+
+                $admin= $this->model("AdminModel");
+                $checkActor = $admin->createNewActor(
+                    $actor_name,
+                    $actor_name_banner,
+                    $server_url."/".$upload_avatar_name,
+                    $server_url."/".$upload_banner_name,
+                    $location,
+                    $date_of_birth,
+                    $occupation,
+                    $biography
+                );
+                if(!$checkActor){
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Cant Add New Actor",
+                    );
+                    echo json_encode($response);
+                    return;
+                };
+
+                $response = array(
+                    "status" => "success",
+                    "error" => false,
+                    "message" => "File uploaded successfully",
+                    "avatar_url" => $server_url."/".$upload_avatar_name,
+                    "banner_url" => $server_url."/".$upload_banner_name,
+                );
+                echo json_encode($response);
+
+            }
+        }
+
         function CreateNewMovie(){
             $response = array();
             $movie_name=
@@ -216,7 +470,7 @@
             $avatar_tmp_name = '';
             $banner_tmp_name = '';
             $upload_avatar_dir = 'Public/Imgs/firm_small/';
-            $upload_banner_dir = 'Public/Imgs/banner_movie/';
+            $upload_banner_dir = 'Public/Imgs/banner_actor/';
             $upload_avatar_name = '';
             $upload_banner_name = '';
             $server_url = 'http://localhost/Cinema/';
@@ -430,28 +684,27 @@
 
             }
 
-//
-//            if(!move_uploaded_file($avatar_tmp_name , $upload_avatar_name))
-//            {
-//                $response = array(
-//                    "status" => "error",
-//                    "error" => true,
-//                    "message" => "Error uploading the Avatar Image!"
-//                );
-//                echo json_encode($response);
-//                return;
-//            }
-//
-//            if(!move_uploaded_file($banner_tmp_name , $upload_banner_name))
-//            {
-//                $response = array(
-//                    "status" => "error",
-//                    "error" => true,
-//                    "message" => "Error uploading the Banner Image!"
-//                );
-//                echo json_encode($response);
-//                return;
-//            }
+            if(!move_uploaded_file($avatar_tmp_name , $upload_avatar_name))
+            {
+                $response = array(
+                    "status" => "error",
+                    "error" => true,
+                    "message" => "Error uploading the Avatar Image!"
+                );
+                echo json_encode($response);
+                return;
+            }
+
+            if(!move_uploaded_file($banner_tmp_name , $upload_banner_name))
+            {
+                $response = array(
+                    "status" => "error",
+                    "error" => true,
+                    "message" => "Error uploading the Banner Image!"
+                );
+                echo json_encode($response);
+                return;
+            }
 
             $admin= $this->model("AdminModel");
             $check = $admin->createNewMovie(

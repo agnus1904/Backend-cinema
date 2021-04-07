@@ -47,6 +47,49 @@
             mysqli_close($this->conn);
         }
 
+        public function createNewActor(
+            $actor_name,
+            $actor_name_banner,
+            $location,
+            $avatar,
+            $banner,
+            $date_of_birth,
+            $occupation,
+            $biography
+        ){
+            $qr="
+                insert into cinema.actor 
+                (
+                    actor_name, 
+                    actor_name_banner, 
+                    avatar_small_url, 
+                    avatar_banner_url, 
+                    date_of_birth, 
+                    location, 
+                    occupation, 
+                    biography
+                )
+                value
+                ( 
+                    '".$actor_name."', 
+                    '".$actor_name_banner."', 
+                    '".$avatar."', 
+                    '".$banner."', 
+                    '".$date_of_birth."', 
+                    '".$location."', 
+                    '".$occupation."', 
+                    '".$biography."'
+                );   
+            ";
+            if(mysqli_query($this->conn,$qr)){
+                mysqli_close($this->conn);
+                return true;
+            }else{
+                mysqli_close($this->conn);
+                return false;
+            }
+        }
+
         public function createNewMovie(
             $movie_name,
             $movie_name_banner,
@@ -59,7 +102,7 @@
             $country,
             $duration
         ){
-            $check=0;
+            $check=null;
             $qr="
                 insert into cinema.movie
                 (
@@ -89,11 +132,11 @@
                 );
             ";
             if(mysqli_query($this->conn,$qr)){
-                $check=true;
+                mysqli_close($this->conn);
+                return true;
             }else{
-                $check=false;
+                mysqli_close($this->conn);
+                return false;
             }
-            mysqli_close($this->conn);
-            return $check;
         }
     }

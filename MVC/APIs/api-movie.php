@@ -20,4 +20,3 @@
     }
         $arr["data"]=$newItem;
     echo json_encode($arr);
-?>
