@@ -31,20 +31,22 @@
                 $qr4=substr($qr4,0,-1).";";
                 // echo $qr4;
                 if(mysqli_query($this->conn,$qr4)){
-                    $arr["status"]="New record created successfully";
-                    echo json_encode($arr);
+                    return 1;
                 }else{
-                    $arr["status"]="seat cant not create";
-                    $arr["error"]= mysqli_error($this->conn);
-                    echo json_encode($arr);
-                    // echo mysqli_error($this->conn);
+                    return 2;
                 }
-            }else {
-                $arr["status"]="room cant not create";
-                $arr["error"] = $qr2."<br>". mysqli_error($this->conn);
-                echo json_encode($arr);
             }
+            return 3;
             mysqli_close($this->conn);
+        }
+
+        public function checkUser($user_name)
+        {
+            $qr="select admin_password from admin where admin_email='".$user_name."'";
+            $result= mysqli_query($this->conn,$qr);
+            $password=mysqli_fetch_assoc($result)["admin_password"];
+
+            return $password;
         }
 
         public function createNewActor(
@@ -88,6 +90,38 @@
                 mysqli_close($this->conn);
                 return false;
             }
+        }
+
+        public function createNewShowTime()
+        {
+            $qr="
+                insert into show_time
+                (
+                    province_id,
+                    cinema_id,
+                    room_id,
+                    movie_id,
+                    show_time_date,
+                    show_time_end
+                ) value
+                (
+                    1,
+                    1,
+                    26,
+                    20,
+                    '2021-04-24 10:30',
+                    DATE_ADD('2021-04-24 10:30', interval
+                         (select duration from movie where movie_id=20) minute
+                    )
+                );
+            ";
+        }
+
+        public function createNewSeateStatus(
+
+        )
+        {
+
         }
 
         public function createNewMovie(

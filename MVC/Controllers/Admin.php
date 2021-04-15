@@ -7,6 +7,7 @@
         function __construct()
         {
             $this->DB= new DB;
+
         }
 
         function TestBooking(){
@@ -17,10 +18,75 @@
             $arr[1]=$row["booking_time"];
             echo json_encode($arr);
         }
-        function CreateNewShowTime()
+
+
+        function CheckLogin()
         {
-            echo "showtime";
+            $response = array();
+            $user_name=$password=$password_check="";
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+//                 User Name
+                if(isset($_POST["user_name"]) && !empty($_POST["user_name"]) && !is_null($_POST["user_name"])){
+                    $user_name=$_POST["user_name"];
+                }else{
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Please Input User Name"
+                    );
+                    echo json_encode($response);
+                    return;
+                }
+
+//                 Password
+                if(isset($_POST["password"]) && !empty($_POST["password"]) && !is_null($_POST["password"])){
+                    $password=$_POST["password"];
+                    $password_check= $this->model("AdminModel")->checkUser($user_name);
+                    if(isset($password_check) && !empty($password_check) && !is_null($password_check)){
+                        if($password===$password_check){
+                            $response = array(
+                                "status" => "success",
+                                "error" => false,
+                                "message" => "Login success"
+                            );
+                            echo json_encode($response);
+                            return;
+                        }else{
+                            $response = array(
+                                "status" => "error",
+                                "error" => true,
+                                "message" => "Password is Wrong"
+                            );
+                            echo json_encode($response);
+                            return;
+                        }
+                    }else{
+                        $response = array(
+                            "status" => "error",
+                            "error" => true,
+                            "message" => "User Name is Wrong"
+                        );
+                        echo json_encode($response);
+                        return;
+                    }
+                }else{
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Please Input password"
+                    );
+                    echo json_encode($response);
+                    return;
+                }
+                $response = array(
+                    "status" => "success",
+                    "error" => false,
+                    "message" => "Login success"
+                );
+                echo json_encode($response);
+            }
         }
+
 
         function CreateNewProvince()
         {
@@ -120,7 +186,7 @@
             $province_id= "";
             $room_type= "";
             $seat_number= "";
-
+            $response = array();
             if($_SERVER['REQUEST_METHOD'] == "POST"){
 
 //                province id
@@ -183,17 +249,56 @@
                         return;
                     }else{
                         $room = $this->model("AdminModel");
-                        $room->createNewRoom($cinema_id, $room_type, $seat_number);
-                        $response = array(
-                            "status" => "success",
-                            "error" => false,
-                            "message" => "The room have been created",
-                        );
-                        echo json_encode($response);
-                        return;
+                        $check = $room->createNewRoom($cinema_id, $room_type, $seat_number);
+                        if($check==1){
+                            $response = array(
+                                "status" => "success",
+                                "error" => false,
+                                "message" => "The room have been created",
+                            );
+                            echo json_encode($response);
+                            return;
+                        }
+                        if($check==3){
+                            $response = array(
+                                "status" => "error",
+                                "error" => true,
+                                "message" => "Can not create New Room",
+                            );
+                            echo json_encode($response);
+                            return;
+                        }
+                        if($check==2){
+                            $response = array(
+                                "status" => "error",
+                                "error" => true,
+                                "message" => "Can not create New Seat",
+                            );
+                            echo json_encode($response);
+                            return;
+                        }
                     }
                 }
+//
+//                 $response = array(
+//                     "status" => "success",
+//                     "error" => false,
+//                     "message" => "The room have been created",
+//                 );
+//                 echo json_encode($response);
+                return;
             }
+        }
+
+        function CreateNewShowTime()
+        {
+            $response = array();
+            $response = array(
+                "status" => "success",
+                "error" => false,
+                "message" => "The New Show Time have been created",
+            );
+            echo json_encode($response);
         }
 
         function CreateNewActor(){

@@ -31,6 +31,47 @@
            $arr["data"]=$newItem;
            echo json_encode($arr);
         }
+
+        function GetRoom($cinema_id)
+        {
+            $arr = array();
+            $index=0;
+            $newItem=[];
+            $result=$this->model("PublicModel")->getRoom($cinema_id);
+            while($row = mysqli_fetch_assoc($result)){
+                $newItem[$index]["room_id"] = $row["room_id"];
+                $newItem[$index]["room_name"] = $row["room_name"];
+                $newItem[$index]["seat_number"] = $row["seat_number"];
+                $index++;
+            }
+           $arr["data"]=$newItem;
+           echo json_encode($arr);
+        }
+
+        function GetAllMovie()
+        {
+            $movies = $this->model("PublicModel");
+            $this->api("api-movies", [
+                "movies" => $movies->getAllMovie(),
+            ]);
+        }
+
+        function GetAllMovieByName($input)
+        {
+            $movies = $this->model("PublicModel");
+            $this->api("api-movies", [
+                "movies" => $movies->getAllMovieByName($input),
+            ]);
+        }
+        function GetAllActor()
+        {
+            $actors = $this->model("PublicModel");
+            $this->api("api-actors",[
+                "actors" => $actors->getAllActor(),
+            ]);
+        }
+
+
         function GetShowTime($cinema, $movie, $time)
         {
             $arr = array();
