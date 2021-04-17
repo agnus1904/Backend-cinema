@@ -117,7 +117,77 @@
             ";
         }
 
-        public function createNewSeateStatus(
+        public function checkProvinceExist($province_name)
+        {
+            $qr="
+                SELECT Count(*) as exist FROM province where province.province_name like '%".$province_name."%'
+            ";
+            $result= mysqli_query($this->conn,$qr);
+            $isExist=mysqli_fetch_assoc($result)["exist"];
+            return $isExist;
+        }
+
+        public function checkCinemaExist($cinema_name)
+        {
+            $qr="
+                SELECT Count(*) as exist FROM cinema where cinema.cinema_name like '%".$cinema_name."%'
+            ";
+            $result= mysqli_query($this->conn,$qr);
+            $isExist=mysqli_fetch_assoc($result)["exist"];
+            return $isExist;
+        }
+
+        public function checkMovieExist($movie_name)
+        {
+            $qr="
+                SELECT Count(*) as exist FROM movie where movie.movie_name like '%".$movie_name."%'
+            ";
+            $result= mysqli_query($this->conn,$qr);
+            $isExist=mysqli_fetch_assoc($result)["exist"];
+            return $isExist;
+        }
+
+        public function checkActorExist($actor_name)
+        {
+            $qr="
+                SELECT Count(*) as exist FROM actor where actor.actor_name like '%".$actor_name."%'
+            ";
+            $result= mysqli_query($this->conn,$qr);
+            $isExist=mysqli_fetch_assoc($result)["exist"];
+            return $isExist;
+        }
+
+        public function checkNewShowtime(
+            $room_id,
+            $movie_id,
+            $show_time_date
+        )
+        {
+            $qr="
+                select COUNT(*)
+                from show_time
+                where
+                    room_id = ".$room_id." and
+                    '".$show_time_date."'>show_time_date and
+                    '".$show_time_date."'<show_time_end
+                or
+                    room_id = ".$room_id." and
+                    DATE_ADD('".$show_time_date."', interval
+                        (select duration from movie where movie_id=".$movie_id.") minute )
+                            >show_time_date
+                        and
+                    DATE_ADD('".$show_time_date."', interval
+                        (select duration from movie where movie_id=".$movie_id.") minute )
+                            <show_time_end
+                ;
+            ";
+            $result= mysqli_query($this->conn,$qr);
+            $check=mysqli_fetch_assoc($result)["COUNT(*)"];
+            return $check;
+
+        }
+
+        public function createNewSeatStatus(
 
         )
         {

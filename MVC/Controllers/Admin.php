@@ -87,7 +87,6 @@
             }
         }
 
-
         function CreateNewProvince()
         {
             $province = "";
@@ -105,20 +104,29 @@
                         return;
                     }
                     $province=$_POST["province_name"];
-                    $qr = "insert into province(province_name) value ('".$province."');";
-                    if(mysqli_query($this->DB->conn,$qr) == TRUE){
-                        $response = array(
-                            "status" => "success",
-                            "error" => false,
-                            "message" => "Done, Province have been created"
-                        );
-                    }else{
+                    $isExist = $this->model("AdminModel")->checkProvinceExist($province);
+                    if($isExist>0){
                         $response = array(
                             "status" => "error",
                             "error" => true,
-                            "message" => "Error: " . $qr . "<br>" . $this->DB->conn->error
+                            "message" => "This Province have been created, Please Enter another Province"
                         );
-                    } 
+                    }else{
+                        $qr = "insert into province(province_name) value ('".$province."');";
+                        if(mysqli_query($this->DB->conn,$qr) == TRUE){
+                            $response = array(
+                                "status" => "success",
+                                "error" => false,
+                                "message" => "Done, Province have been created"
+                            );
+                        }else{
+                            $response = array(
+                                "status" => "error",
+                                "error" => true,
+                                "message" => "Error: " . $qr . "<br>" . $this->DB->conn->error
+                            );
+                        }
+                    }
                 }else{
                     $response = array(
                         "status" => "error",
@@ -161,24 +169,36 @@
                     return;
                 }else{
                     $cinema=$_POST["cinema_name"];
-                    $qr = "insert into cinema(cinema_name, province_id) value ('".$cinema."', '".$province_id."');";
-                    if(mysqli_query($this->DB->conn,$qr) == TRUE){
-                        $response = array(
-                            "status" => "success",
-                            "error" => false,
-                            "message" => "Done, Cinema have been created"
-                        );
-                    }else{
+
+                    $isExist = $this->model("AdminModel")->checkCinemaExist($cinema);
+                    if($isExist>0){
                         $response = array(
                             "status" => "error",
                             "error" => true,
-                            "message" => "Error: " . $qr . "<br>" . $this->DB->conn->error
+                            "message" => "This Cinema have been created, Please Enter another Cinema"
                         );
+                    }else{
+                        $qr = "insert into cinema(cinema_name, province_id) value ('".$cinema."', '".$province_id."');";
+                        if(mysqli_query($this->DB->conn,$qr) == TRUE){
+                            $response = array(
+                                "status" => "success",
+                                "error" => false,
+                                "message" => "Done, Cinema have been created"
+                            );
+                        }else{
+                            $response = array(
+                                "status" => "error",
+                                "error" => true,
+                                "message" => "Error: " . $qr . "<br>" . $this->DB->conn->error
+                            );
+                        }
                     }
+
                 }
                 echo json_encode($response);
             }
         }
+
 
         function CreateNewRoom()
         {
@@ -293,10 +313,96 @@
         function CreateNewShowTime()
         {
             $response = array();
+            $cinema_id = "";
+            $province_id= "";
+            $room_id= "";
+            $movie_id="";
+            $show_time_date="";
+
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+
+    //          movie id
+                    if(!isset($_POST["movie_id"]) || empty($_POST["movie_id"]) || is_null($_POST["movie_id"])){
+                        $response = array(
+                            "status" => "error",
+                            "error" => true,
+                            "message" => "Please Select a movie"
+                        );
+                        echo json_encode($response);
+                        return;
+                    }else{
+                        $movie_id=$_POST["movie_id"];
+                    }
+
+    //          province id
+                if(!isset($_POST["province_id"]) || empty($_POST["province_id"]) || is_null($_POST["province_id"])){
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Please Select Province"
+                    );
+                    echo json_encode($response);
+                    return;
+                }else{
+                    $province_id = $_POST["province_id"];
+                }
+
+    //          cinema id
+                if(!isset($_POST["cinema_id"]) || empty($_POST["cinema_id"]) || is_null($_POST["cinema_id"])){
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Please Select Cinema"
+                    );
+                    echo json_encode($response);
+                    return;
+                }else{
+                    $cinema_id=$_POST["cinema_id"];
+                }
+
+    //          show_time_date
+                    if(!isset($_POST["show_time_date"]) ||
+                        empty($_POST["show_time_date"]) ||
+                        is_null($_POST["show_time_date"])){
+                        $response = array(
+                            "status" => "error",
+                            "error" => true,
+                            "message" => "Please Select a Time you want to create a new show time"
+                        );
+                        echo json_encode($response);
+                        return;
+                    }else{
+                        $show_time_date=$_POST["show_time_date"];
+                    }
+
+    //          room id
+                if(!isset($_POST["room_id"]) || empty($_POST["room_id"]) || is_null($_POST["room_id"])){
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Please Select a room"
+                    );
+                    echo json_encode($response);
+                    return;
+                }else{
+                    $room_id=$_POST["room_id"];
+                }
+            }
+
+            $check = $this->model("AdminModel")->checkNewShowtime(
+                $room_id, $movie_id , $show_time_date
+            );
+
             $response = array(
                 "status" => "success",
                 "error" => false,
                 "message" => "The New Show Time have been created",
+                "province" => $province_id,
+                "cinema" => $cinema_id,
+                "room_id" => $room_id,
+                "movie_id" => $movie_id,
+                "show_time_date" => $show_time_date,
+                "Checked" => $check,
             );
             echo json_encode($response);
         }
@@ -340,6 +446,17 @@
                     return;
                 } else {
                     $actor_name = $_POST["actor_name"];
+
+                    $isExist = $this->model("AdminModel")->checkActorExist($actor_name);
+                    if($isExist>0){
+                        $response = array(
+                            "status" => "error",
+                            "error" => true,
+                            "message" => "This Actor have been created, Please Enter another Actor"
+                        );
+                        echo json_encode($response);
+                        return;
+                    }
                 }
 
 //                Actor Name Banner
@@ -596,6 +713,17 @@
                     return;
                 } else {
                     $movie_name = $_POST["movie_name"];
+
+                    $isExist = $this->model("AdminModel")->checkMovieExist($movie_name);
+                    if($isExist>0){
+                        $response = array(
+                            "status" => "error",
+                            "error" => true,
+                            "message" => "This Movie have been created, Please Enter another Movie"
+                        );
+                        echo json_encode($response);
+                        return;
+                    }
                 }
 
 //                Movie name banner
