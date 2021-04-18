@@ -88,31 +88,41 @@
            echo json_encode($arr);
         }
 
+        function GetSeatStatus($show_time_id)
+        {
+
+            $seatsStatus= $this->model("PublicModel")->getSeatStatus($show_time_id);
+            $this->api("api-seat-status",[
+                "seats" => $seatsStatus
+            ]);
+        }
+
         function GetShowTimeByRoom($room, $movie, $time)
-                {
-                    $arr = array();
-                    $index=0;
-                    $newItem=[];
-                    $result=$this->model("PublicModel")->getShowTimeByRoom($room, $movie, $time);
-                    while($row = mysqli_fetch_assoc($result)){
-                        $newItem[$index]["show_time_id"] = $row["show_time_id"];
-                        $newItem[$index]["room_name"] = $row["room_name"];
-                        $newItem[$index]["room_id"] = $row["room_id"];
-                        $newItem[$index]["show_time_date"] = substr($row["show_time_date"],11);
-                        $newItem[$index]["show_time_end"] = substr($row["show_time_end"],11);
-//                         $newItem[$index]["count"] = $row;
-                        $index++;
-                   }
-                   $count = count($newItem);
-                   if($count===0){
-                        $newItem[0]["show_time_id"] = "";
-                        $newItem[0]["room_name"] = "";
-                        $newItem[0]["room_id"] = $room;
-                        $newItem[0]["show_time_date"] = "";
-                        $newItem[0]["show_time_end"] = "";
-                   }
-                   $arr["data"]=$newItem;
-                   echo json_encode($arr);
-                }
+        {
+            $arr = array();
+            $index=0;
+            $newItem=[];
+            $result=$this->model("PublicModel")->getShowTimeByRoom($room, $movie, $time);
+            while($row = mysqli_fetch_assoc($result)){
+                $newItem[$index]["show_time_id"] = $row["show_time_id"];
+                $newItem[$index]["room_name"] = $row["room_name"];
+                $newItem[$index]["room_id"] = $row["room_id"];
+                $newItem[$index]["show_time_date"] = substr($row["show_time_date"],11);
+                $newItem[$index]["show_time_end"] = substr($row["show_time_end"],11);
+                $newItem[$index]["movie_name"] = $row["movie_name"];
+                $index++;
+           }
+           $count = count($newItem);
+           if($count===0){
+                $newItem[0]["show_time_id"] = "";
+                $newItem[0]["room_name"] = "";
+                $newItem[0]["room_id"] = $room;
+                $newItem[0]["show_time_date"] = "";
+                $newItem[0]["show_time_end"] = "";
+                $newItem[$index]["movie_name"] = "";
+           }
+           $arr["data"]=$newItem;
+           echo json_encode($arr);
+        }
     }
 ?>

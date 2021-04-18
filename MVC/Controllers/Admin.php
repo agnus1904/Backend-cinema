@@ -299,18 +299,66 @@
                         }
                     }
                 }
-//
-//                 $response = array(
-//                     "status" => "success",
-//                     "error" => false,
-//                     "message" => "The room have been created",
-//                 );
-//                 echo json_encode($response);
                 return;
             }
         }
 
         function CreateNewShowTime()
+        {
+            $response = array();
+            $cinema_id = "";
+            $province_id= "";
+            $room_id= "";
+            $movie_id="";
+            $show_time_date="";
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                $movie_id=$_POST["movie_id"];
+                $province_id = $_POST["province_id"];
+                $cinema_id=$_POST["cinema_id"];
+                $show_time_date=$_POST["show_time_date"];
+                $room_id=$_POST["room_id"];
+                $check_show_time= $this->model("AdminModel")->createNewShowTime(
+                    $province_id,
+                    $cinema_id,
+                    $room_id,
+                    $movie_id,
+                    $show_time_date
+                );
+                if($check_show_time===true){
+                    $check_seat_status=$this->model("AdminModel")->createSeatStatus(
+                       $show_time_date,
+                       $room_id
+                    );
+                    if($check_seat_status===true){
+                        $response = array(
+                            "status" => "success",
+                            "error" => false,
+                            "message" => "The Show Time have been Created"
+                        );
+                    }else{
+                        $check_delete_show_time = $this->model("AdminModel")->deleteShowTime(
+                            $show_time_date,
+                            $room_id
+                        );
+                        $response = array(
+                            "status" => "error",
+                            "error" => true,
+                            "message" => "The Show Time Cant be Create"
+                        );
+                    }
+                }else{
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "The Show Time Cant be Create"
+                    );
+                }
+                echo json_encode($response);
+            }
+        }
+
+
+        function CheckNewShowTime()
         {
             $response = array();
             $cinema_id = "";

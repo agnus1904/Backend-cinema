@@ -92,7 +92,64 @@
             }
         }
 
-        public function createNewShowTime()
+        public function createSeatStatus(
+            $show_time_date,
+            $room_id
+        )
+        {
+            $qr="
+                insert into seat_status_on_show_time
+                    (
+                        seat_id,
+                        seat_status,
+                        show_time_id
+                    )
+                    select seat_id,
+                    1 as seat_status,
+                    (
+                        select show_time_id from show_time where
+                               show_time_date='".$show_time_date."' and
+                               room_id=".$room_id."
+                    ) as show_time_id
+                    from seat where room_id =".$room_id."
+                ;
+            ";
+            if(mysqli_query($this->conn,$qr)){
+                mysqli_close($this->conn);
+                return true;
+            }else{
+                mysqli_close($this->conn);
+                return false;
+            }
+        }
+
+        public function deleteShowTime(
+            $show_time_date,
+            $room_id
+        )
+        {
+            $qr="
+                delete from show_time
+                where
+                    show_time_date='".$show_time_date."' and
+                    room_id=".$room_id.";
+            ";
+            if(mysqli_query($this->conn,$qr)){
+                mysqli_close($this->conn);
+                return true;
+            }else{
+                mysqli_close($this->conn);
+                return false;
+            }
+        }
+
+        public function createNewShowTime(
+            $province_id,
+            $cinema_id,
+            $room_id,
+            $movie_id,
+            $show_time_date
+        )
         {
             $qr="
                 insert into show_time
@@ -105,16 +162,23 @@
                     show_time_end
                 ) value
                 (
-                    1,
-                    1,
-                    26,
-                    20,
-                    '2021-04-24 10:30',
-                    DATE_ADD('2021-04-24 10:30', interval
-                         (select duration from movie where movie_id=20) minute
+                    ".$province_id.",
+                    ".$cinema_id.",
+                    ".$room_id.",
+                    ".$movie_id.",
+                    '".$show_time_date."',
+                    DATE_ADD('".$show_time_date."', interval
+                         (select duration from movie where movie_id=".$movie_id.") minute
                     )
                 );
             ";
+            if(mysqli_query($this->conn,$qr)){
+                mysqli_close($this->conn);
+                return true;
+            }else{
+                mysqli_close($this->conn);
+                return false;
+            }
         }
 
         public function checkProvinceExist($province_name)
@@ -168,17 +232,23 @@
                 from show_time
                 where
                     room_id = ".$room_id." and
-                    '".$show_time_date."'>show_time_date and
-                    '".$show_time_date."'<show_time_end
+                    '".$show_time_date."'>=show_time_date and
+                    '".$show_time_date."'<=show_time_end
                 or
                     room_id = ".$room_id." and
                     DATE_ADD('".$show_time_date."', interval
                         (select duration from movie where movie_id=".$movie_id.") minute )
-                            >show_time_date
+                            >=show_time_date
                         and
                     DATE_ADD('".$show_time_date."', interval
                         (select duration from movie where movie_id=".$movie_id.") minute )
-                            <show_time_end
+                            <=show_time_end
+                or
+                    room_id = ".$room_id." and
+                    '".$show_time_date."' <= show_time_date and
+                    DATE_ADD('".$show_time_date."', interval
+                             (select duration from movie where movie_id=".$movie_id.") minute )
+                            >=show_time_end
                 ;
             ";
             $result= mysqli_query($this->conn,$qr);

@@ -62,13 +62,25 @@
             return mysqli_query($this->conn,$qr);
         }
 
+        public function getSeatStatus($show_time_id)
+        {
+            $qr="
+                select seat_status_on_show_time_id,
+                    seat_status
+                from seat_status_on_show_time
+                where show_time_id=".$show_time_id.";
+            ";
+            return mysqli_query($this->conn,$qr);
+        }
+
         public function getShowTimeByRoom($room, $movie ,$time){
                     $qr="
                         select show_time_id,
                         (select room_name from room where show_time.room_id = room.room_id) as room_name,
                         room_id,
                         show_time_date,
-                        show_time_end
+                        show_time_end,
+                        (select movie_name from movie where show_time.movie_id = movie.movie_id) as movie_name
                         from show_time
                         where
                             room_id=".$room."
