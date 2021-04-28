@@ -14,7 +14,7 @@
 
         public function getMovieItemsSortByViewOpening($number){
             $qr = "SELECT movie_id, movie_name, avatar_url, main_type, release_date, duration
-                FROM movie where release_date<'2021-04-24' order by views desc limit ".$number.";";
+                FROM movie where release_date<(select CURRENT_TIMESTAMP) order by views desc limit ".$number.";";
                 if(mysqli_query($this->conn,$qr)){
                     // echo "success";
                 }
@@ -23,7 +23,7 @@
 
         public function getMovieItemsSortByViewAndNameOpening($number, $input){
             $qr = "SELECT movie_id, movie_name, avatar_url, main_type, release_date, duration
-                FROM movie where release_date<'2021-04-24' and movie_name like '%".$input."%'
+                FROM movie where release_date<(select CURRENT_TIMESTAMP) and movie_name like '%".$input."%'
                 order by views desc limit ".$number.";";
                 if(mysqli_query($this->conn,$qr)){
                     // echo "success";
@@ -31,10 +31,9 @@
                 return mysqli_query($this->conn,$qr);
         }
 
-
         public function getMovieItemsSortByViewComing($number){
             $qr = "SELECT movie_id, movie_name, avatar_url, main_type, release_date, duration
-                FROM movie where release_date>'2021-04-24' limit ".$number.";";
+                FROM movie where release_date>(select CURRENT_TIMESTAMP) limit ".$number.";";
                 if(mysqli_query($this->conn,$qr)){
                     // echo "success";
                 }
@@ -44,7 +43,7 @@
 
 
         public function getMovieBannerById($id){
-            $qr = "SELECT movie_id,movie_name_banner,banner_url  FROM movie WHERE movie_id=".$id."";
+            $qr = "SELECT movie_id,movie_name_banner,banner_url, release_date FROM movie WHERE movie_id=".$id."";
             return mysqli_query($this->conn,$qr);
         }
 

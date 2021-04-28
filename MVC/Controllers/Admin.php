@@ -1,5 +1,8 @@
 <?php
-
+header('Content-Type: application/json; charset=utf-8');
+    header('Access-Control-Allow-Origin: *');
+    header("Access-Control-Allow-Methods: PUT, GET, POST");
+    header("Access-Control-Allow-Headers: X-Requested-With");
     class Admin extends Controller 
     {
         private $DB;
@@ -19,6 +22,34 @@
             echo json_encode($arr);
         }
 
+        function GetShowTime()
+        {
+            $response = array();
+            $province_id=$cinema_id=$date="";
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                $province_id=$_POST["province_id"];
+                $cinema_id=$_POST["cinema_id"];
+                $date=$_POST["date"];
+                $result = $this->model("AdminModel")->getShowTime(
+                    $province_id,
+                    $cinema_id,
+                    $date
+                );
+                $arr = array();
+                $index=0;
+                $newItem=[];
+                while($row = mysqli_fetch_assoc($result)){
+                    $newItem[$index]["show_time_id"] = $row["show_time_id"];
+                    $newItem[$index]["room_id"] = $row["room_id"];
+                    $newItem[$index]["room_name"] = $row["room_name"];
+                    $newItem[$index]["show_time_date"] = $row["show_time_date"];
+                    $index++;
+                }
+                $arr["data"]=$newItem;
+                echo json_encode($arr);
+
+            }
+        }
 
         function CheckLogin()
         {
@@ -37,38 +68,37 @@
                     echo json_encode($response);
                     return;
                 }
-
 //                 Password
                 if(isset($_POST["password"]) && !empty($_POST["password"]) && !is_null($_POST["password"])){
                     $password=$_POST["password"];
-                    $password_check= $this->model("AdminModel")->checkUser($user_name);
-                    if(isset($password_check) && !empty($password_check) && !is_null($password_check)){
-                        if($password===$password_check){
-                            $response = array(
-                                "status" => "success",
-                                "error" => false,
-                                "message" => "Login success"
-                            );
-                            echo json_encode($response);
-                            return;
-                        }else{
-                            $response = array(
-                                "status" => "error",
-                                "error" => true,
-                                "message" => "Password is Wrong"
-                            );
-                            echo json_encode($response);
-                            return;
-                        }
-                    }else{
+                    $role_check = $this->model("AdminModel")->checkUser($user_name,$password);
+                    if($role_check==="1"){
                         $response = array(
-                            "status" => "error",
-                            "error" => true,
-                            "message" => "User Name is Wrong"
+                            "status" => "success",
+                            "error" => false,
+                            "message" => "Login Success",
+                            "role" => "admin"
                         );
                         echo json_encode($response);
                         return;
                     }
+                    if($role_check==="2"){
+                        $response = array(
+                            "status" => "success",
+                            "error" => false,
+                            "message" => "Login Success",
+                            "role" => "super-admin"
+                        );
+                        echo json_encode($response);
+                        return;
+                    }
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "Wrong user or password"
+                    );
+                    echo json_encode($response);
+                    return;
                 }else{
                     $response = array(
                         "status" => "error",
@@ -78,12 +108,117 @@
                     echo json_encode($response);
                     return;
                 }
-                $response = array(
-                    "status" => "success",
-                    "error" => false,
-                    "message" => "Login success"
+            }
+        }
+
+        function GetAllAccount()
+        {
+            $response = array();
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                $result = $this->model("AdminModel")->getAllAccount();
+                $arr = array();
+                $index=0;
+                $newItem=[];
+                while($row = mysqli_fetch_assoc($result)){
+                    $newItem[$index]["admin_id"] = $row["admin_id"];
+                    $newItem[$index]["admin_email"] = $row["admin_email"];
+                    $newItem[$index]["admin_role"] = $row["admin_role"];
+                    $newItem[$index]["admin_name"] = $row["admin_name"];
+                    $newItem[$index]["admin_number"] = $row["admin_number"];
+                    $index++;
+                }
+                $arr["data"]=$newItem;
+                echo json_encode($arr);
+            }
+        }
+
+        function CreateNewAccount()
+        {
+            $response = array();
+            $admin_user_name=$admin_password=$admin_role=$admin_name=$admin_number_phone="";
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                $admin_user_name=$_POST["admin_user_name"];
+                $admin_password=$_POST["admin_password"];
+                $admin_role=$_POST["admin_role"];
+                $admin_name=$_POST["admin_name"];
+                $admin_number_phone=$_POST["admin_number_phone"];
+                $qr="
+                    select count(*) as count from admin where admin_email='".$admin_user_name."';
+                ";
+                $result= mysqli_query($this->DB->conn,$qr);
+                $check_user=mysqli_fetch_assoc($result)["count"];
+
+                if($check_user==="0"){
+                    $check= $this->model("AdminModel")->createNewAccount(
+                        $admin_user_name,
+                        $admin_password,
+                        $admin_role,
+                        $admin_name,
+                        $admin_number_phone
+                    );
+                    if($check=true){
+                        $response = array(
+                            "status" => "success",
+                            "error" => false,
+                            "message" => "Create Account Successful"
+                        );
+                        echo json_encode($response);
+                        return;
+                    }else{
+                        $response = array(
+                            "status" => "error",
+                            "error" => true,
+                            "message" => "Unknown error"
+                        );
+                        echo json_encode($response);
+                        return;
+                    }
+                }else{
+                    $response = array(
+                        "status" => "error",
+                        "error" => true,
+                        "message" => "This Account name have been created"
+                    );
+                    echo json_encode($response);
+                    return;
+                }
+
+
+            }
+        }
+
+
+        function GetAllTicket()
+        {
+            $response = array();
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                $dataTicket = $this->model("AdminModel")->getAllTicket();
+                $this->api("api-tickets",[
+                    "tickets" =>  $dataTicket
+                ]);
+            }
+        }
+
+        function GetAllTicketFromTo()
+        {
+            $response = array();
+            $province_id=$cinema_id=0;
+            $time_start=$time_end="";
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                $time_start=$_POST["time_start"];
+                $time_end=$_POST["time_end"];
+                $province_id=$_POST["province_id"];
+                $cinema_id=$_POST["cinema_id"];
+
+                $dataTicket = $this->model("AdminModel")->getAllTicketFromTo(
+                    $time_start,
+                    $time_end,
+                    $province_id,
+                    $cinema_id
                 );
-                echo json_encode($response);
+                $this->api("api-tickets",[
+                    "tickets" =>  $dataTicket
+                ]);
             }
         }
 
@@ -356,6 +491,8 @@
                 echo json_encode($response);
             }
         }
+
+
 
 
         function CheckNewShowTime()

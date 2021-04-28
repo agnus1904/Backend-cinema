@@ -5,6 +5,8 @@
         protected $action="SayHi";
         protected $params;
 
+
+
         function __construct()
         {
             //Array ( [0] => home [1] => action [2] => 123 )
